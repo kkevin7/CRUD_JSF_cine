@@ -1,0 +1,81 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <title>Categoria</title>
+    </h:head>
+    <h:body>
+
+    
+        <f:view>
+            
+            <h:form id="form-categoria" style="width: 80%; margin: 0 auto">
+                <h1 style="text-align: center"><h:outputText  value="Lista de Categorias"/></h1>
+                <p:dataTable value="#{categoriaController.obtenerTodos()}" 
+                                id="tb-categoria"
+                                var="item"
+                                lazy="true"
+                                paginator="true"
+                                rows="5"
+                                rowsPerPageTemplate="5,10,15"
+                                paginatorPosition="bottom"
+                                paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                widgetVar="tableCategoria"
+                                selectionMode="single" 
+                                selection="#{categoriaController.selectCategoria}" 
+                                rowKey="#{item.idCategoria}"
+                                >
+                    <p:ajax event="rowSelect" listener="#{categoriaController.onRowSelect}" update=":formulario"/>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="Nombre"/>
+                        </f:facet>
+                        <h:outputText value="#{item.nombre}"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="Activo"/>
+                        </f:facet>
+                        <h:outputText value="#{item.activo ? 'Activo' : 'Inactivo'}"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="Descripcion"/>
+                        </f:facet>
+                        <h:outputText value="#{item.descripcion}"/>
+                    </p:column>
+                </p:dataTable>
+            </h:form>
+
+
+            <h:form id="formulario" style="margin: 10px auto; padding: 10px; width: 500px">
+                <p:growl id="growl" keepAlive="3000" showDetail="true" sticky="true" /> 
+                <h1><h:outputText value="Categoria"/></h1>
+                <p:panelGrid columns="2">
+                    <p:outputLabel value="Nombre:" for="nombre" />
+                    <p:inputText id="nombre" value="#{categoriaController.categoria.nombre}" title="Nombre" required="true" requiredMessage="El campo nombre es requerdio"/>
+                    <p:outputLabel value="Activo:" for="activo" />
+                    <p:selectOneMenu id="activo" value="#{categoriaController.categoria.activo}" title="Activo" required="true" requiredMessage="Es necesario seleccionar el estado" converter="omnifaces.SelectItemsConverter">
+                        <f:selectItem itemLabel="Seleccione un estado" itemValue="" noSelectionOption="true"  />
+                        <f:selectItem itemLabel="Activo" itemValue="#{true}" />
+                        <f:selectItem itemLabel="Inactivo" itemValue="#{false}" />
+                    </p:selectOneMenu>
+                    <p:outputLabel value="Descripcion:" for="descripcion" />
+                    <p:inputTextarea rows="4" cols="30" id="descripcion" value="#{categoriaController.categoria.descripcion}" title="Descripcion" />
+                </p:panelGrid>
+                <div style="margin: 10px auto">
+                    <p:commandButton value="Guardar" rendered="#{categoriaController.btnCreate}" actionListener="#{categoriaController.crear()}" update=":formulario :form-categoria:tb-categoria"/>
+                    <p:commandButton value="Cancelar" actionListener="#{categoriaController.limpiar()}" update=":formulario :form-categoria:tb-categoria" />
+                    <p:commandButton value="Modificar" rendered="#{categoriaController.btnEdit}" actionListener="#{categoriaController.update()}" update=":formulario :form-categoria:tb-categoria" />
+                    <p:commandButton value="Eliminar" rendered="#{categoriaController.btnDelete}" actionListener="#{categoriaController.delete()}" update=":formulario :form-categoria:tb-categoria" />
+                </div>
+            </h:form>
+        </f:view>
+
+    </h:body>
+</html>
+
